@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Bar Chart</title>
+</head>
+<body>
+    <form>
+        <input id="tb-values" type="text" value="1,2,3">
+        <button id="btn-draw">Draw chart</button>
+        <button id="btn-download" type="button">Download</button>
+    </form>
+    <canvas id="chart-canvas" style="width
+    :400px; height: 300px;"
+    width="400"
+    height="300">
+        The canvas element is not supported.
+    </canvas>
+
+    <script src="canvas-bar-chart-library.js"></script>
+    <script>
+        'use strict';
+        //const chartCanvas = document.getElementById('chart-canvas');
+        const chartCanvas = document.querySelector('#chart-canvas');
+        const barChart = new BarChart(chartCanvas);
+        //console.log(barChart.#canvas)
+        //barChart.draw([1,2,3]);
+
+        //document.getElementById('btn-draw')
+        document.querySelector('#btn-draw').addEventListener('click', (e)=>{
+            e.preventDefault(); // anulam actiunea implicita a browser-ului
+
+            const values = document.querySelector('#tb-values').value;
+            const valuesArray = values.split(',');
+            //console.log(valuesArray.map(x => Number(x)));
+            console.log(valuesArray.map(Number));
+            barChart.draw(
+                valuesArray, 
+                {
+                    showOutline: false,
+                    showLabels: false
+                }
+            );
+        });
+
+        const btnDownload = document.getElementById('btn-download');
+        btnDownload.addEventListener('click', ()=>{
+            const dataURL = chartCanvas.toDataURL('image/webp', 1);
+            //console.log(dataURL);
+
+            const anchor = document.createElement('a');
+            anchor.href = dataURL;
+            anchor.download = 'chart.webp';
+            anchor.click();
+        });
+    </script>
+</body>
+</html>
