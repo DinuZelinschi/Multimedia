@@ -1,0 +1,54 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>HTML5 - Image Editor</title> 
+</head> 
+<body> 
+    <canvas id="visible-canvas"> 
+        Sorry, your browser does not support the canvas element. Please update your browser.
+    </canvas> 
+    <input id="file-picker" type="file" accept="image/*"> 
+    <div>
+        <button data-effect="normal">Normal</button>
+        <button data-effect="greyscale">Grayscale</button>
+        <button data-effect="threshold">Threshold</button>
+    </div>
+    <script type="module"> 
+        import { ImageEditor } from './image-editor.js';
+        
+        const filePicker = document.getElementById('file-picker'); 
+        const canvas = document.getElementById('visible-canvas'); 
+        const imageEditor = new ImageEditor(canvas); 
+        
+        filePicker.addEventListener('change', () => { 
+            const files = filePicker.files; 
+            if (files.length > 0) { 
+                const file = files[0]; 
+                const reader = new FileReader(); 
+                
+                reader.addEventListener('load', () => { 
+                    const dataUrl = reader.result; 
+                    const img = document.createElement('img'); 
+                    
+                    img.addEventListener('load', () => { 
+                        imageEditor.changeImage(img); 
+                    }); 
+                    
+                    img.src = dataUrl; 
+                }); 
+                
+                reader.readAsDataURL(file); 
+            } 
+        }); 
+
+        const effectButtons = document.querySelectorAll('[data-effect]');
+        effectButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                imageEditor.changeEffect(button.dataset.effect);
+            });
+        });
+    </script> 
+</body> 
+</html>

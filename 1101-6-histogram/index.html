@@ -15,27 +15,30 @@
     </canvas>
 
     <script type="module">
-        import { BarChart } from './canvas-bar-chart-library.js';
+        import {BarChart} from './canvas-bar-chart-library.js';
 
         const canvasImage = document.querySelector('#canvas-image');
         const canvasHistogram = document.querySelector('#canvas-histogram');
+
         const barChart = new BarChart(canvasHistogram);
 
-        document.addEventListener('dragover', (e) => e.preventDefault());
+        document.addEventListener('dragover', (e)=>
+            e.preventDefault()
+        )
 
-        document.addEventListener('drop', (e) => {
+        document.addEventListener('drop', (e)=>{
             e.preventDefault();
 
             const files = e.dataTransfer.files;
-            if (files.length > 0) {
+            if (files.length > 0){
                 const file = files[0];
-                if (file.type.startsWith('image/')) {
+                if (file.type.startsWith('image/')){
                     const reader = new FileReader();
-                    reader.addEventListener('load', () => {
+                    reader.addEventListener('load', ()=>{
                         const dataUrl = reader.result;
 
                         const img = document.createElement('img');
-                        img.addEventListener('load', () => {
+                        img.addEventListener('load', ()=>{
                             canvasImage.width = img.naturalWidth;
                             canvasImage.height = img.naturalHeight;
 
@@ -43,32 +46,35 @@
                             context.drawImage(img, 0, 0);
 
                             drawHistogram();
-                        });
+                        })
 
                         img.src = dataUrl;
-                    });
+                    })  
                     reader.readAsDataURL(file);
+
                 }
             }
-        });
+        })
 
-        function drawHistogram() {
+        function drawHistogram(){
             const context = canvasImage.getContext('2d');
             const imageData = context.getImageData(0, 0, canvasImage.width, canvasImage.height);
             const data = imageData.data;
 
             const v = new Array(256).fill(0);
 
-            for (let i = 0; i < data.length; i += 4) {
+            for(let i = 0; i < data.length; i+=4){
                 const r = data[i];
-                const g = data[i + 1];
-                const b = data[i + 2];
+                const g = data[i+1];
+                const b = data[i+2];
+                //const a = data[i+3];
 
-                const average = Math.round((r + g + b) / 3);
+                const average = Math.round((r+g+b)/3);
                 v[average]++;
             }
-
-            barChart.draw(v, { stroke: false });
+            
+            barChart.draw(v, {stroke: false});
+            //console.log(v);
         }
     </script>
 </body>
